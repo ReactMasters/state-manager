@@ -1,9 +1,12 @@
-export class Listener {
+export type Listener = () => void;
 
-}
-
-export class State {
+export class Store<T> {
   listeners: Listener[] = []
+  state: T;
+
+  constructor(initialState: T) {
+    this.state = initialState;
+  }
 
   subscribe(listener: Listener) {
     // listener 배열에 삽입
@@ -16,6 +19,17 @@ export class State {
   unsubscribe(listener: Listener) {
     this.listeners = this.listeners.filter((l => l !== listener))
   }
-}
 
-// export default State;
+  updateState(nextState: T) {
+    const shouldUpdate = nextState !== this.state
+    if (!shouldUpdate) return this.state
+
+    this.state = nextState
+
+    this.broadcast()
+  }
+
+  broadcast() {
+    this.listeners.forEach(l => l())
+  }
+}
