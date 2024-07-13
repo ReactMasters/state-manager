@@ -1,15 +1,15 @@
-import { Store, Listener } from './state';
+import { Store, Listener } from './store';
 
-describe('State class', () => {
+describe('Store class', () => {
   describe('subscribe method', () => {
     it('should add a listener to the listeners array', () => {
-      const state = new Store(0);
+      const store = new Store(0);
       const listener = vitest.fn() as Listener; // Mock listener function
 
-      const unsubscribe = state.subscribe(listener);
+      const unsubscribe = store.subscribe(listener);
 
-      expect(state.listeners.length).toBe(1);
-      expect(state.listeners[0]).toBe(listener);
+      expect(store.listeners.length).toBe(1);
+      expect(store.listeners[0]).toBe(listener);
 
       unsubscribe(); // Call unsubscribe to avoid memory leaks
     });
