@@ -24,7 +24,7 @@ export class Store<T> {
     return this.state;
   }
 
-  updateState(newState: T | ((currentState: T) => T)) {
+  setState(newState: T | ((currentState: T) => T)) {
     const nextState =
       typeof newState === "function"
         ? (newState as (currentState: T) => T)(this.state)

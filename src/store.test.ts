@@ -64,7 +64,7 @@ describe("Store class", () => {
     });
   });
 
-  describe("updateState method", () => {
+  describe("setState method", () => {
     it("should update the internal state and call listeners", () => {
       const store = new Store(0);
       const listener = vitest.fn() as Listener;
@@ -72,7 +72,7 @@ describe("Store class", () => {
       store.subscribe(listener);
 
       const nextState = 1;
-      store.updateState(nextState);
+      store.setState(nextState);
 
       expect(store.state).toEqual(nextState);
       expect(listener).toHaveBeenCalledTimes(1);
@@ -85,7 +85,7 @@ describe("Store class", () => {
 
       store.subscribe(listener);
 
-      store.updateState(unchangedState);
+      store.setState(unchangedState);
 
       expect(store.state).toEqual(unchangedState);
       expect(listener).toHaveBeenCalledTimes(0);
@@ -93,8 +93,8 @@ describe("Store class", () => {
 
     it("should handle multiple updates correctly", () => {
       const store = new Store({ count: 0 });
-      store.updateState({ count: 1 });
-      store.updateState(({ count }) => ({ count: count + 1 }));
+      store.setState({ count: 1 });
+      store.setState(({ count }) => ({ count: count + 1 }));
       expect(store.state).toEqual({ count: 2 });
     });
   });
