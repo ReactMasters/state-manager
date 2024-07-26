@@ -99,6 +99,13 @@ describe("Store class", () => {
     });
   });
 
+  describe("getState method", () => {
+    it("should return the current state", () => {
+      const store = new Store(0);
+      expect(store.getState()).toBe(0);
+    });
+  });
+
   describe("broadcast method", () => {
     it("should call all subscribed listeners with the current state", () => {
       const store = new Store(0);
