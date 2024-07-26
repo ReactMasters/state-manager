@@ -20,7 +20,12 @@ export class Store<T> {
     this.listeners.delete(listener);
   }
 
-  updateState(nextState: T) {
+  updateState(newState: T | ((currentState: T) => T)) {
+    const nextState =
+      typeof newState === "function"
+        ? (newState as (currentState: T) => T)(this.state)
+        : newState;
+
     const shouldUpdate = nextState !== this.state;
     if (!shouldUpdate) return this.state;
 

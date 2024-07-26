@@ -90,6 +90,13 @@ describe("Store class", () => {
       expect(store.state).toEqual(unchangedState);
       expect(listener).toHaveBeenCalledTimes(0);
     });
+
+    it("should handle multiple updates correctly", () => {
+      const store = new Store({ count: 0 });
+      store.updateState({ count: 1 });
+      store.updateState(({ count }) => ({ count: count + 1 }));
+      expect(store.state).toEqual({ count: 2 });
+    });
   });
 
   describe("broadcast method", () => {
