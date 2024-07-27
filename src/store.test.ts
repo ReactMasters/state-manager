@@ -6,7 +6,7 @@ describe("Store class", () => {
       const store = new Store(0);
       const listener = vitest.fn() as Listener<number>; // Mock listener function
 
-      const unsubscribe = store.subscribe((v) => v, listener);
+      const unsubscribe = store.subscribe(listener);
 
       expect(store.listeners.size).toBe(1);
       expect(
@@ -24,10 +24,9 @@ describe("Store class", () => {
       const store = new Store(0);
       const listener1 = vitest.fn() as Listener<number>;
       const listener2 = vitest.fn() as Listener<number>;
-      const selector = (v: number) => v;
 
-      const unsubscribe1 = store.subscribe(selector, listener1);
-      store.subscribe(selector, listener2);
+      const unsubscribe1 = store.subscribe(listener1);
+      store.subscribe(listener2);
 
       expect(store.listeners.size).toBe(2);
 
@@ -52,8 +51,8 @@ describe("Store class", () => {
       const listener1 = vitest.fn() as Listener<number>;
       const listener2 = vitest.fn() as Listener<number>;
 
-      const unsub = store.subscribe((v) => v, listener1);
-      store.subscribe((v) => v, listener2);
+      const unsub = store.subscribe(listener1);
+      store.subscribe(listener2);
 
       expect(store.listeners.size).toBe(2);
 
@@ -71,7 +70,7 @@ describe("Store class", () => {
       const store = new Store(0);
       const listener1 = vitest.fn() as Listener<number>;
 
-      store.subscribe((v) => v, listener1);
+      store.subscribe(listener1);
 
       const originalSize = store.listeners.size;
 
@@ -87,7 +86,7 @@ describe("Store class", () => {
       const store = new Store(0);
       const listener = vitest.fn() as Listener<number>;
 
-      store.subscribe((v) => v, listener);
+      store.subscribe(listener);
 
       const nextState = 1;
       store.setState(nextState);
@@ -105,7 +104,7 @@ describe("Store class", () => {
       const store = new Store(unchangedState, equalityFn);
       const listener = vitest.fn() as Listener<typeof unchangedState>;
 
-      store.subscribe((v) => v, listener);
+      store.subscribe(listener);
 
       store.setState(unchangedState);
 
@@ -134,8 +133,8 @@ describe("Store class", () => {
       const listener1 = vitest.fn() as Listener<number>;
       const listener2 = vitest.fn() as Listener<number>;
 
-      store.subscribe((v) => v, listener1);
-      store.subscribe((v) => v, listener2);
+      store.subscribe(listener1);
+      store.subscribe(listener2);
 
       store.broadcast();
 

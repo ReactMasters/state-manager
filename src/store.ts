@@ -17,7 +17,7 @@ export class Store<T extends U, U = T> {
     this.equalityFn = equalityFn;
   }
 
-  subscribe(selector: Selector<T, U>, listener: Listener<U>) {
+  subscribe(listener: Listener<U>, selector: Selector<T, U> = (v) => v) {
     const key = Symbol();
 
     this.listeners.set(key, {
