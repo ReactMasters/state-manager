@@ -97,8 +97,12 @@ describe("Store class", () => {
     });
 
     it("should not call listener when the same value is passed", () => {
-      const unchangedState = {};
-      const store = new Store(unchangedState);
+      const unchangedState = { a: 1, b: "1" };
+      const equalityFn = (
+        v1: typeof unchangedState,
+        v2: typeof unchangedState
+      ) => v1.a === v2.a && v1.b === v2.b;
+      const store = new Store(unchangedState, equalityFn);
       const listener = vitest.fn() as Listener<typeof unchangedState>;
 
       store.subscribe((v) => v, listener);

@@ -1,14 +1,17 @@
 export type Listener<T> = (state: T) => void;
 type Selector<T, U> = (state: T) => U;
 type Updater<T> = (state: T) => T;
+type EqualityFn<T> = (a: T, b: T) => boolean;
 
 export class Store<T extends U, U = T> {
   listeners: Map<symbol, { selector: Selector<T, U>; listener: Listener<U> }> =
     new Map();
   state: T;
+  private equalityFn: EqualityFn<T>;
 
-  constructor(initialState: T) {
+  constructor(initialState: T, equalityFn: EqualityFn<T> = Object.is) {
     this.state = initialState;
+    this.equalityFn = equalityFn;
   }
 
   subscribe(selector: Selector<T, U>, listener: Listener<U>) {
@@ -38,7 +41,7 @@ export class Store<T extends U, U = T> {
   setState(newState: U | Updater<T>) {
     const nextState = this.getNextState(this.state, newState);
 
-    const shouldUpdate = nextState !== this.state;
+    const shouldUpdate = !this.equalityFn(nextState, this.state);
     if (!shouldUpdate) return this.state;
 
     this.state = nextState;
