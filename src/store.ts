@@ -1,10 +1,11 @@
 export type Listener<T> = (state: T) => void;
-type Selector<T, U> = (state: T) => U;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Selector<T> = (state: T) => any;
 type Updater<T> = (state: T) => T;
 type EqualityFn<T> = (a: T, b: T) => boolean;
 
-export class Store<T extends U, U = T> {
-  listeners: Map<symbol, { selector: Selector<T, U>; listener: Listener<U> }> =
+export class Store<T> {
+  listeners: Map<symbol, { selector: Selector<T>; listener: Listener<T> }> =
     new Map();
   state: T;
   private equalityFn: EqualityFn<T>;
@@ -17,7 +18,7 @@ export class Store<T extends U, U = T> {
     this.equalityFn = equalityFn;
   }
 
-  subscribe(listener: Listener<U>, selector: Selector<T, U> = (v) => v) {
+  subscribe(listener: Listener<T>, selector: Selector<T> = (v) => v) {
     const key = Symbol();
 
     this.listeners.set(key, {
@@ -41,7 +42,7 @@ export class Store<T extends U, U = T> {
     return this.state;
   }
 
-  setState(newState: U | Updater<T>) {
+  setState(newState: T | Updater<T>) {
     const nextState = this.getNextState(this.state, newState);
 
     const shouldUpdate = !this.equalityFn(nextState, this.state);
@@ -52,7 +53,7 @@ export class Store<T extends U, U = T> {
     this.broadcast();
   }
 
-  private getNextState(currentState: T, newState: U | Updater<T>): T {
+  private getNextState(currentState: T, newState: T | Updater<T>): T {
     if (typeof newState === "function") {
       return (newState as Updater<T>)(currentState);
     }
