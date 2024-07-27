@@ -17,6 +17,27 @@ describe("Store class", () => {
 
       unsubscribe(); // Call unsubscribe to avoid memory leaks
     });
+
+    it("should add a listener with custom selector", () => {
+      const store = new Store({ a: 1, b: 2 });
+      const listener = vi.fn();
+
+      store.subscribe(listener, ({ a }) => a + 3);
+      store.setState(({ b }) => ({ a: 2, b }));
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(5);
+    });
+
+    it("should broadcast when values of subscribed properties has been changed", () => {
+      const store = new Store({ a: 1, b: 2 });
+      const listener = vi.fn();
+
+      store.subscribe(listener, ({ a }) => a + 1);
+      store.setState(({ a, b }) => ({ a, b: b + 1 }));
+
+      expect(listener).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe("unsubscribe method", () => {
@@ -136,7 +157,7 @@ describe("Store class", () => {
       store.subscribe(listener1);
       store.subscribe(listener2);
 
-      store.broadcast();
+      store.setState(1);
 
       expect(listener1).toHaveBeenCalledTimes(1);
       expect(listener2).toHaveBeenCalledTimes(1);

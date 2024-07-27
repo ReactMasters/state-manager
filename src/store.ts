@@ -8,6 +8,8 @@ export class Store<T> {
   listeners: Map<symbol, { selector: Selector<T>; listener: Listener<T> }> =
     new Map();
   state: T;
+  prevState: T;
+
   private equalityFn: EqualityFn<T>;
 
   constructor(
@@ -15,6 +17,7 @@ export class Store<T> {
     equalityFn: EqualityFn<T> = (s1, s2) => Object.is(s1, s2)
   ) {
     this.state = initialState;
+    this.prevState = initialState;
     this.equalityFn = equalityFn;
   }
 
@@ -48,6 +51,7 @@ export class Store<T> {
     const shouldUpdate = !this.equalityFn(nextState, this.state);
     if (!shouldUpdate) return this.state;
 
+    this.prevState = this.state;
     this.state = nextState;
 
     this.broadcast();
@@ -70,8 +74,16 @@ export class Store<T> {
 
   broadcast() {
     for (const { selector, listener } of this.listeners.values()) {
-      const selectedState = selector(this.state);
-      listener(selectedState);
+      const nextState = selector(this.state);
+
+      const shouldBroadcast = !this.equalityFn(
+        nextState,
+        selector(this.prevState)
+      );
+
+      if (shouldBroadcast) {
+        listener(nextState);
+      }
     }
   }
 }
