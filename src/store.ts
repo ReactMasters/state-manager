@@ -9,7 +9,10 @@ export class Store<T extends U, U = T> {
   state: T;
   private equalityFn: EqualityFn<T>;
 
-  constructor(initialState: T, equalityFn: EqualityFn<T> = Object.is) {
+  constructor(
+    initialState: T,
+    equalityFn: EqualityFn<T> = (s1, s2) => Object.is(s1, s2)
+  ) {
     this.state = initialState;
     this.equalityFn = equalityFn;
   }
