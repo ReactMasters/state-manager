@@ -1,8 +1,8 @@
-import { Store, Listener } from './store'
+import { Store, Listener, Subscription } from './store'
 
 describe('Store class', () => {
   describe('subscribe method', () => {
-    it('should add a listener to the listeners array', () => {
+    it('should add a listener to the subscription set', () => {
       const store = new Store(0)
       const listener = vitest.fn() as Listener<number> // Mock listener function
 
@@ -41,7 +41,7 @@ describe('Store class', () => {
   })
 
   describe('unsubscribe method', () => {
-    it('should remove a listener from the listeners array', () => {
+    it('should remove a listener by cleanup function', () => {
       const store = new Store(0)
       const listener1 = vitest.fn() as Listener<number>
       const listener2 = vitest.fn() as Listener<number>
@@ -67,36 +67,19 @@ describe('Store class', () => {
       ).toBeTruthy()
     })
 
-    it('should remove a listner by clean-up function', () => {
+    it('should do nothing if subscription is not found', () => {
       const store = new Store(0)
-      const listener1 = vitest.fn() as Listener<number>
-      const listener2 = vitest.fn() as Listener<number>
-
-      const unsub = store.subscribe(listener1)
-      store.subscribe(listener2)
-
-      expect(store.subscriptions.size).toBe(2)
-
-      unsub()
-
-      expect(store.subscriptions.size).toBe(1)
-      expect(
-        Array.from(store.subscriptions.values()).some(
-          ({ listener: l }) => listener1 === l
-        )
-      ).toBeFalsy()
-    })
-
-    it('should not modify the array if listener is not found', () => {
-      const store = new Store(0)
-      const listener1 = vitest.fn() as Listener<number>
-
-      store.subscribe(listener1)
+      const listener = vitest.fn() as Listener<number>
+      store.subscribe(listener)
 
       const originalSize = store.subscriptions.size
 
-      const nonExistentKey = Symbol()
-      store.unsubscribe(nonExistentKey)
+      const subscription: Subscription<number> = {
+        listener: vitest.fn() as Listener<number>,
+        selector: (v) => v,
+      }
+
+      store.unsubscribe(subscription)
 
       expect(store.subscriptions.size).toBe(originalSize)
     })
