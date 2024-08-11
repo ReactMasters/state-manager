@@ -17,7 +17,7 @@ module.exports = {
       { allowConstantExport: true },
     ],
     'prettier/prettier': [
-      'error',
+      'warn',
       {
         arrowParens: 'always', // 항상 괄호 사용
         bracketSpacing: true, // 중괄호 안의 공백 유지
