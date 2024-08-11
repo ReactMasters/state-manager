@@ -4,13 +4,13 @@ type Selector<T> = (state: T) => any
 type Updater<T> = (state: T) => T
 type EqualityFn<T> = (a: T, b: T) => boolean
 
-interface Subscription<T> {
+export interface Subscription<T> {
   selector: Selector<T>
   listener: Listener<T>
 }
 
 export class Store<T> {
-  subscriptions: Map<symbol, Subscription<T>> = new Map()
+  subscriptions: Set<Subscription<T>> = new Set()
   state: T
   prevState: T
 
@@ -26,23 +26,16 @@ export class Store<T> {
   }
 
   subscribe(listener: Listener<T>, selector: Selector<T> = (v) => v) {
-    const key = Symbol()
+    const subscription = { listener, selector }
 
-    this.subscriptions.set(key, {
-      selector,
-      listener,
-    })
+    this.subscriptions.add(subscription)
 
-    // cleanup
-    return () => this.unsubscribe(key)
+    // cleanup by its own reference
+    return () => this.unsubscribe(subscription)
   }
 
-  unsubscribe(key: symbol) {
-    if (!this.subscriptions.has(key)) {
-      return
-    }
-
-    this.subscriptions.delete(key)
+  unsubscribe(subscription: Subscription<T>) {
+    this.subscriptions.delete(subscription)
   }
 
   getState(): T {
