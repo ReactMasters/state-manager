@@ -3,7 +3,7 @@ export type Listener<T> = (state: T) => void;
 type Selector<T> = (state: T) => any;
 type Updater<T> = (state: T) => T;
 type EqualityFn<T> = (a: T, b: T) => boolean;
-type NewState<T> =  T | Updater<T>
+type NewState<T> = T | Updater<T>
 
 export class Store<T> {
   listeners: Map<symbol, { selector: Selector<T>; listener: Listener<T> }> =
@@ -58,7 +58,7 @@ export class Store<T> {
     this.broadcast();
   }
 
-  isUpdaterType = (newState: NewState<T>): newState is Updater<T> =>{
+  private isUpdaterType(newState: NewState<T>): newState is Updater<T> {
     return typeof newState === 'function';
   }
 
