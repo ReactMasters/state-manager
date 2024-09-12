@@ -173,4 +173,47 @@ describe("Store class", () => {
       expect(isUpdaterType(() => { })).toBe(true);
     })
   })
+
+  describe("getNextState method", () => {
+    it("should call newState method and return a new state", () => {
+      const store = new Store<{ count: number }>({
+        count: 1
+      });
+      const getNextStateDesc = Object.getOwnPropertyDescriptor(Store.prototype, "getNextState")?.value;
+      const getNextState = getNextStateDesc.bind(store);
+      const newState = vitest.fn((oldState: { count: number }) => {
+        return {
+          count: oldState.count * 2
+        }
+      })
+      expect(getNextState(store.state, newState)).toEqual({
+        count: 2
+      })
+      expect(newState).toHaveBeenCalled();
+    })
+
+    it("should return newState if currentState or newState is null", () => {
+      const store = new Store<{ count: number }>({
+        count: 1
+      });
+      const getNextStateDesc = Object.getOwnPropertyDescriptor(Store.prototype, "getNextState")?.value;
+      const getNextState = getNextStateDesc.bind(store);
+      expect(getNextState(store.state, null)).toBeNull();
+
+      const newState = {}
+      expect(getNextState(null, newState)).toBe(newState)
+    })
+
+    it("should return a merged object", () => {
+      const store = new Store<{ age: number }>({
+        age: 1,
+      });
+      const getNextStateDesc = Object.getOwnPropertyDescriptor(Store.prototype, "getNextState")?.value;
+      const getNextState = getNextStateDesc.bind(store);
+      expect(getNextState(store.state, { name: 'name' })).toEqual({
+        age: 1,
+        name: 'name'
+      })
+    })
+  })
 });
