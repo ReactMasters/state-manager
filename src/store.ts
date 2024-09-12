@@ -54,7 +54,7 @@ export class Store<T> {
     this.broadcast()
   }
 
-  isUpdaterType = (newState: NewState<T>): newState is Updater<T> =>{
+  private isUpdaterType(newState: NewState<T>): newState is Updater<T> {
     return typeof newState === 'function';
   }
 
