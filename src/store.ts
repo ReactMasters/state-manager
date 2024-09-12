@@ -3,6 +3,7 @@ export type Listener<T> = (state: T) => void;
 type Selector<T> = (state: T) => any;
 type Updater<T> = (state: T) => T;
 type EqualityFn<T> = (a: T, b: T) => boolean;
+type NewState<T> =  T | Updater<T>
 
 export class Store<T> {
   listeners: Map<symbol, { selector: Selector<T>; listener: Listener<T> }> =
@@ -45,7 +46,7 @@ export class Store<T> {
     return this.state;
   }
 
-  setState(newState: T | Updater<T>) {
+  setState(newState: NewState<T>) {
     const nextState = this.getNextState(this.state, newState);
 
     const shouldUpdate = !this.equalityFn(nextState, this.state);
@@ -57,9 +58,13 @@ export class Store<T> {
     this.broadcast();
   }
 
-  private getNextState(currentState: T, newState: T | Updater<T>): T {
-    if (typeof newState === "function") {
-      return (newState as Updater<T>)(currentState);
+  isUpdaterType = (newState: NewState<T>): newState is Updater<T> =>{
+    return typeof newState === 'function';
+  }
+
+  private getNextState(currentState: T, newState: NewState<T>): T {
+    if (this.isUpdaterType(newState)) {
+      return newState(currentState);
     }
 
     const isNonNullObject = (value: unknown): value is object =>
