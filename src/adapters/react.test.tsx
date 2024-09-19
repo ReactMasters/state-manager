@@ -1,35 +1,36 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { createStateManager, StateManager, useReactive } from './react'
+import { createStore, useReactive } from './react'
 import { Mock } from 'vitest'
+import { Store } from '../store'
 
-describe('CounterComponent', () => {
-  let stateManager: StateManager<number>
+describe('createStore & useReactive API', () => {
+  let store: Store<number>
   let ReactiveComponent: () => JSX.Element
   let NonReactiveComponent: () => JSX.Element
   let SelectorComponent: () => JSX.Element
   let onSelectRender: Mock
 
   beforeEach(() => {
-    stateManager = createStateManager(0)
+    store = createStore(0)
 
     ReactiveComponent = () => {
-      const count = useReactive(stateManager)
+      const count = useReactive(store)
 
       return (
         <div>
           <p>Count: {count}</p>
-          <button onClick={() => stateManager.set(count + 1)}>Increment</button>
+          <button onClick={() => store.setState(count + 1)}>Increment</button>
         </div>
       )
     }
 
     NonReactiveComponent = () => {
-      const count = stateManager.get()
+      const count = store.getState()
 
       return (
         <div>
           <p>Count: {count}</p>
-          <button onClick={() => stateManager.set(count + 1)}>Increment</button>
+          <button onClick={() => store.setState(count + 1)}>Increment</button>
         </div>
       )
     }
@@ -37,13 +38,13 @@ describe('CounterComponent', () => {
     onSelectRender = vitest.fn()
 
     SelectorComponent = () => {
-      const isUnder3 = useReactive(stateManager, (n) => n < 3)
+      const isUnder3 = useReactive(store, (n) => n < 3)
       onSelectRender()
 
       return (
         <div>
           <p>{isUnder3 ? 'Small' : 'Big'}</p>
-          <button onClick={() => stateManager.set((n) => n + 1)}>
+          <button onClick={() => store.setState((n) => n + 1)}>
             Increment
           </button>
         </div>
