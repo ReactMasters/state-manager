@@ -1,8 +1,8 @@
 export type Listener<T> = (state: T) => void
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Selector<T> = (state: T) => any
-type Updater<T> = (state: T) => T
-type EqualityFn<T> = (a: T, b: T) => boolean
+export type Selector<T, O = any> = (state: T) => O
+export type Updater<T> = (state: T) => T
+export type EqualityFn<T> = (a: T, b: T) => boolean
 
 export interface Subscription<T> {
   selector: Selector<T>
