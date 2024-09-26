@@ -1,9 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { Selector, Store } from '../store' // Store 클래스를 가져올 경로 지정
 
-export const createStore = <T>(defaultValue: T): Store<T> =>
-  new Store(defaultValue)
-
 export function useReactive<T, O = T>(
   store: Store<T>,
   selector: Selector<T, O> = (state) => state as unknown as O

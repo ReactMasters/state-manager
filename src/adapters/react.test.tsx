@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { createStore, useReactive } from './react'
+import { useReactive } from './react'
+import { createStore } from '../vanilla'
 import { Mock } from 'vitest'
 import { Store } from '../store'
 
