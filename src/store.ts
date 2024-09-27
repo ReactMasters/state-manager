@@ -42,7 +42,7 @@ export class Store<T> {
     return this.state
   }
 
-  setState(newState: T | Updater<T>) {
+  setState(newState: NewState<T>) {
     const nextState = this.getNextState(this.state, newState)
 
     const shouldUpdate = !this.equalityFn(nextState, this.state)
