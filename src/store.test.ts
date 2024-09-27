@@ -161,8 +161,18 @@ describe('Store class', () => {
 
       store.setState(1)
 
-      expect(listener1).toHaveBeenCalledTimes(1)
-      expect(listener2).toHaveBeenCalledTimes(1)
+      expect(listener1).toHaveBeenCalledTimes(1);
+      expect(listener2).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("isUpdaterType method", () => {
+    it("should return true only if the param is a function", () => {
+      const store = new Store(0);
+      const isUpdaterTypeDesc = Object.getOwnPropertyDescriptor(Store.prototype, "isUpdaterType")?.value;
+      const isUpdaterType = isUpdaterTypeDesc.bind(store);
+      expect(isUpdaterType(1)).toBe(false);
+      expect(isUpdaterType(() => { })).toBe(true);
     })
   })
-})
+});
