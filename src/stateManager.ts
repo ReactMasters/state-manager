@@ -9,7 +9,7 @@ export interface Subscription<T> {
   listener: Listener<T>
 }
 
-export class Store<T> {
+export class StateManager<T> {
   subscriptions: Set<Subscription<T>> = new Set()
   state: T
   prevState: T

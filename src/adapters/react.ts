@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { Selector, Store, Updater } from '../store'; // Store 클래스를 가져올 경로 지정
+import { Selector, StateManager, Updater } from '../stateManager'; // Store 클래스를 가져올 경로 지정
 
 type ActionMap<T> = {
   [key: string]: Updater<T>
@@ -8,15 +8,15 @@ type SetterMap<T, A extends ActionMap<T>> = {
   [ActionName in keyof A]: () => T | undefined;
 }
 export type Temp<T, A extends ActionMap<T> = ActionMap<T>> = {
-  get: Store<T>['getState']
-  set: Store<T>['setState'],
-  subscribe: Store<T>['subscribe'],
-  unsubscribe: Store<T>['unsubscribe'],
+  get: StateManager<T>['getState']
+  set: StateManager<T>['setState'],
+  subscribe: StateManager<T>['subscribe'],
+  unsubscribe: StateManager<T>['unsubscribe'],
 } & SetterMap<T, A>
 
 
 export const createVar = <T, A extends ActionMap<T>>(initialState: T, actionMap?: A): Temp<T, A> => {
-  const store = new Store<T>(initialState);
+  const store = new StateManager<T>(initialState);
   const setters: SetterMap<T, A> = {} as SetterMap<T, A>;
 
   for (const key in actionMap) {
