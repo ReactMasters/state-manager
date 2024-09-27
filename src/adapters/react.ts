@@ -1,19 +1,48 @@
 import { useSyncExternalStore } from 'react'
-import { Selector, Store } from '../store' // Store 클래스를 가져올 경로 지정
+import { Selector, Store, Updater } from '../store'; // Store 클래스를 가져올 경로 지정
 
-export const createStore = <T>(defaultValue: T): Store<T> =>
-  new Store(defaultValue)
+type ActionMap<T> = {
+  [key: string]: Updater<T>
+}
+type SetterMap<T, A extends ActionMap<T>> = {
+  [ActionName in keyof A]: () => T | undefined;
+}
+export type Temp<T, A extends ActionMap<T> = ActionMap<T>> = {
+  get: Store<T>['getState']
+  set: Store<T>['setState'],
+  subscribe: Store<T>['subscribe'],
+  unsubscribe: Store<T>['unsubscribe'],
+} & SetterMap<T, A>
+
+
+export const createVar = <T, A extends ActionMap<T>>(initialState: T, actionMap?: A): Temp<T, A> => {
+  const store = new Store<T>(initialState);
+  const setters: SetterMap<T, A> = {} as SetterMap<T, A>;
+
+  for (const key in actionMap) {
+    const updater = actionMap[key]
+    setters[key] = () => store.setState(updater);
+  }
+
+  return {
+    get: store.getState.bind(store),
+    set: store.setState.bind(store),
+    subscribe: store.subscribe.bind(store),
+    unsubscribe: store.unsubscribe.bind(store),
+    ...setters
+  }
+}
 
 export function useReactive<T, O = T>(
-  store: Store<T>,
+  temp: Temp<T>,
   selector: Selector<T, O> = (state) => state as unknown as O
 ): O {
   return useSyncExternalStore<O>(
     // subscribe: 상태 변경되면 리렌더링을 일으킬 listener 를 받아서 핸들링, cleanup 을 반환해야함
-    (listener) => store.subscribe(listener, selector),
+    (listener) => temp.subscribe(listener, selector),
     // getSnapshot: 현재 상태를 반환
-    () => selector(store.getState()),
+    () => selector(temp.get()),
     // getServerSnapshot: SSR 에서 현재 상태를 반환
-    () => selector(store.getState())
+    () => selector(temp.get())
   )
 }
