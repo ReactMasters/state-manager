@@ -104,3 +104,24 @@ describe('createStore & useReactive API', () => {
     expect(onSelectRender).toHaveBeenCalledTimes(2)
   })
 })
+
+describe('createStore actions', ()=>{
+  it('should expose given actions', ()=>{
+    const countStore = createStore(0, {
+      increment: count => count + 1,
+      decrement: count => count - 1
+    })
+    expect(typeof countStore.decrement).toBe('function');
+    expect(typeof countStore.increment).toBe('function');
+  })
+  it('should update state correctly through given actions', ()=>{
+    const countStore = createStore(0, {
+      increment: count => count + 1,
+      decrement: count => count - 1
+    })
+    countStore.increment();
+    expect(countStore.get()).toBe(1)
+    countStore.decrement();
+    expect(countStore.get()).toBe(0)
+  })
+})
