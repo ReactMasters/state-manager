@@ -99,6 +99,25 @@ describe('Store class', () => {
       expect(listener).toHaveBeenCalledTimes(1)
     })
 
+    it("should update the state correctly when an object, as opposed to primitive, is given as a param", ()=>{
+      const store = new Store({user: {
+        name: 'originalName',
+        age: 10
+      }});
+      store.setState({
+        user: {
+          name: 'newUserName',
+          age: 30
+        }
+      })
+      expect(store.state).toEqual({
+        user: {
+          name: 'newUserName',
+          age: 30
+        }
+      })
+    })
+
     it('should not call listener when the same value is passed', () => {
       const unchangedState = { a: 1, b: '1' }
       const equalityFn = (
