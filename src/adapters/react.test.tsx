@@ -1,35 +1,35 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { createVar, Temp, useReactive } from './react'
+import { createStore, Store, useReactive } from './react'
 import { Mock } from 'vitest'
 
 describe('createStore & useReactive API', () => {
-  let temp: Temp<number>
+  let store: Store<number>
   let ReactiveComponent: () => JSX.Element
   let NonReactiveComponent: () => JSX.Element
   let SelectorComponent: () => JSX.Element
   let onSelectRender: Mock
 
   beforeEach(() => {
-    temp = createVar(0)
+    store = createStore(0)
 
     ReactiveComponent = () => {
-      const count = useReactive(temp)
+      const count = useReactive(store)
 
       return (
         <div>
           <p>Count: {count}</p>
-          <button onClick={() => temp.set(count + 1)}>Increment</button>
+          <button onClick={() => store.set(count + 1)}>Increment</button>
         </div>
       )
     }
 
     NonReactiveComponent = () => {
-      const count = temp.get()
+      const count = store.get()
 
       return (
         <div>
           <p>Count: {count}</p>
-          <button onClick={() => temp.set(count + 1)}>Increment</button>
+          <button onClick={() => store.set(count + 1)}>Increment</button>
         </div>
       )
     }
@@ -37,13 +37,13 @@ describe('createStore & useReactive API', () => {
     onSelectRender = vitest.fn()
 
     SelectorComponent = () => {
-      const isUnder3 = useReactive(temp, (n) => n < 3)
+      const isUnder3 = useReactive(store, (n) => n < 3)
       onSelectRender()
 
       return (
         <div>
           <p>{isUnder3 ? 'Small' : 'Big'}</p>
-          <button onClick={() => temp.set((n) => n + 1)}>
+          <button onClick={() => store.set((n) => n + 1)}>
             Increment
           </button>
         </div>
