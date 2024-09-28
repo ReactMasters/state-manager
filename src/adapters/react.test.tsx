@@ -1,11 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { useReactive } from './react'
-import { createStore } from '../vanilla'
+import { createStore, StoreApi } from '../vanilla'
 import { Mock } from 'vitest'
-import { Store } from '../store'
 
 describe('createStore & useReactive API', () => {
-  let store: Store<number>
+  let store: StoreApi<number>
   let ReactiveComponent: () => JSX.Element
   let NonReactiveComponent: () => JSX.Element
   let SelectorComponent: () => JSX.Element

@@ -1,8 +1,9 @@
 import { useSyncExternalStore } from 'react'
-import { Selector, Store } from '../store' // Store 클래스를 가져올 경로 지정
+import { Selector } from '../store' // Store 클래스를 가져올 경로 지정
+import { StoreApi } from '../vanilla'
 
 export function useReactive<T, O = T>(
-  store: Store<T>,
+  store: StoreApi<T>,
   selector: Selector<T, O> = (state) => state as unknown as O
 ): O {
   return useSyncExternalStore<O>(
