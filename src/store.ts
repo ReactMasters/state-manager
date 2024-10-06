@@ -3,7 +3,7 @@ export type Listener<T> = (state: T) => void
 export type Selector<T, O = any> = (state: T) => O
 export type Updater<T> = (state: T) => T
 export type EqualityFn<T> = (a: T, b: T) => boolean
-export type NewState<T> =  T | Updater<T>
+export type NewState<T> = T | Updater<T>
 export interface Subscription<T> {
   selector: Selector<T>
   listener: Listener<T>
@@ -55,12 +55,12 @@ export class Store<T> {
   }
 
   private isUpdaterType(newState: NewState<T>): newState is Updater<T> {
-    return typeof newState === 'function';
+    return typeof newState === 'function'
   }
 
   private getNextState(currentState: T, newState: NewState<T>): T {
     if (this.isUpdaterType(newState)) {
-      return newState(currentState);
+      return newState(currentState)
     }
 
     const isNonNullObject = (value: unknown): value is object =>
