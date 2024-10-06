@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createStore } from './vanilla'
+import { createStore } from './createStore'
 
 describe('createStore', () => {
   it('creates a store with initial value', () => {
