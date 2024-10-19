@@ -11,6 +11,25 @@ export interface StoreApi<T> {
 type Action<T> = (set: SetState<T>) => Record<string, (prevState: T) => void>
 type InferActions<T, A> = A extends (set: SetState<T>) => infer U ? U : never
 
+/**
+ * Creates a new store with the given initial state and optional actions.
+ * 
+ * @param initialValue - The initial state value.
+ * @param actions - Optional actions to update the state.
+ * 
+ * @returns The store API and any actions if provided.
+ * 
+ * @example
+ * ```ts
+ * const store = createStore(0, (set) => ({
+ *   inc: (prev) => set(prev + 1),
+ *   dec: (prev) => set(prev - 1),
+ * }));
+ * 
+ * store.inc(); // Increments the state
+ * store.dec(); // Decrements the state
+ * ```
+ */
 export const createStore = <T, A extends Action<T> | undefined>(
   initialValue: T,
   actions?: A
