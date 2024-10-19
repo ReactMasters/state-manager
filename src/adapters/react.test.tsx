@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { useReactive } from './react'
-import { createStore, StoreApi } from '../vanilla'
+import { createStore, StoreApi } from '../createStore'
 import { Mock } from 'vitest'
 
 describe('createStore & useReactive API', () => {

@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { Selector } from '../store' // Store 클래스를 가져올 경로 지정
-import { StoreApi } from '../vanilla'
+import { StoreApi } from '../createStore'
 
 export function useReactive<T, O = T>(
   store: StoreApi<T>,

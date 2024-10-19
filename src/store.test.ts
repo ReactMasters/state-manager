@@ -99,22 +99,24 @@ describe('Store class', () => {
       expect(listener).toHaveBeenCalledTimes(1)
     })
 
-    it("should update the state correctly when an object, as opposed to primitive, is given as a param", ()=>{
-      const store = new Store({user: {
-        name: 'originalName',
-        age: 10
-      }});
+    it('should update the state correctly when an object, as opposed to primitive, is given as a param', () => {
+      const store = new Store({
+        user: {
+          name: 'originalName',
+          age: 10,
+        },
+      })
       store.setState({
         user: {
           name: 'newUserName',
-          age: 30
-        }
+          age: 30,
+        },
       })
       expect(store.state).toEqual({
         user: {
           name: 'newUserName',
-          age: 30
-        }
+          age: 30,
+        },
       })
     })
 
@@ -161,18 +163,21 @@ describe('Store class', () => {
 
       store.setState(1)
 
-      expect(listener1).toHaveBeenCalledTimes(1);
-      expect(listener2).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("isUpdaterType method", () => {
-    it("should return true only if the param is a function", () => {
-      const store = new Store(0);
-      const isUpdaterTypeDesc = Object.getOwnPropertyDescriptor(Store.prototype, "isUpdaterType")?.value;
-      const isUpdaterType = isUpdaterTypeDesc.bind(store);
-      expect(isUpdaterType(1)).toBe(false);
-      expect(isUpdaterType(() => { })).toBe(true);
+      expect(listener1).toHaveBeenCalledTimes(1)
+      expect(listener2).toHaveBeenCalledTimes(1)
     })
   })
-});
+
+  describe('isUpdaterType method', () => {
+    it('should return true only if the param is a function', () => {
+      const store = new Store(0)
+      const isUpdaterTypeDesc = Object.getOwnPropertyDescriptor(
+        Store.prototype,
+        'isUpdaterType'
+      )?.value
+      const isUpdaterType = isUpdaterTypeDesc.bind(store)
+      expect(isUpdaterType(1)).toBe(false)
+      expect(isUpdaterType(() => {})).toBe(true)
+    })
+  })
+})
