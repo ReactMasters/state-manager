@@ -1,6 +1,5 @@
 {
-  "name": "state-manager",
-  "private": true,
+  "name": "@react-masters/state-manager",
   "version": "0.0.0-alpha.1",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
